@@ -1,4 +1,5 @@
 import { MdOutlineEmail } from "react-icons/md";
+import { RiLockPasswordLine } from "react-icons/ri";
 
 const Login = () => {
   return (
@@ -8,11 +9,14 @@ const Login = () => {
         <h3 className="text-xl font-normal uppercase mt-4">
           Already registred ?
         </h3>
-        <p className="italic mt-2">
-          If you have an account with us please login
+        <p className="italic opacity-70 mt-2">
+          Don't have an account?
+          <span className="text-blue-500 hover:underline cursor-pointer">
+            Sign up
+          </span>
         </p>
         <div className="flex items-center gap-2 p-2 border rounded-md mt-4 font-thin border-gray-400">
-          <MdOutlineEmail className="text-2xl" />
+          <MdOutlineEmail className="text-xl" />
           <input
             className="w-[100%] border-none focus:outline-none"
             type="email"
@@ -21,7 +25,7 @@ const Login = () => {
           />
         </div>
         <div className="flex items-center gap-2 p-2 border rounded-md mt-4 font-thin border-gray-400">
-          <MdOutlineEmail className="text-2xl" />
+          <RiLockPasswordLine className="text-2xl" />
           <input
             className="w-[100%] border-none focus:outline-none"
             type="password"
