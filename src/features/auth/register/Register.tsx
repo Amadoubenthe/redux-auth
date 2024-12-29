@@ -1,6 +1,7 @@
 import { MdOutlineEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
+import { Link } from "react-router";
 
 const Register = () => {
   return (
@@ -11,10 +12,13 @@ const Register = () => {
           Already registred ?
         </h3>
         <p className="italic opacity-70 mt-2">
-          If you have an account with us please{" "}
-          <span className="text-blue-500 hover:underline cursor-pointer">
+          If you have an account with us please
+          <Link
+            className="text-blue-500 hover:underline cursor-pointer pl-1"
+            to="/"
+          >
             login
-          </span>
+          </Link>
         </p>
         <div className="flex items-center gap-4 p-2 border rounded-md mt-4 font-thin border-gray-400">
           <FaRegUser className="text-xl" />
