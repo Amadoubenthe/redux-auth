@@ -3,14 +3,11 @@ import { FaRegUser } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Link } from "react-router";
 import { useState } from "react";
-
-export interface RegisterPayload {
-  username: string;
-  email: string;
-  password: string;
-}
+import { useDispatch } from "react-redux";
+import { register, RegisterPayload } from "../store/auth.store";
 
 const Register = () => {
+  const dispatch = useDispatch();
   const [registerPayload, setRegisterPayload] = useState<RegisterPayload>({
     username: "",
     email: "",
@@ -18,6 +15,8 @@ const Register = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(`name: ${e.target.name}, value: ${e.target.value}`);
+
     setRegisterPayload({
       ...registerPayload,
       [e.target.name]: e.target.value,
@@ -27,6 +26,7 @@ const Register = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(registerPayload);
+    dispatch(register(registerPayload) as any);
   };
 
   const isDesabled = () => {
