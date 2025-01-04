@@ -1,43 +1,51 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  createAsyncThunk,
+  createSlice,
+} from "@reduxjs/toolkit";
 import axios from "axios";
 
 export interface RegisterPayload {
-  username: string;
   email: string;
   password: string;
 }
 
-// Définition des interfaces
-export interface User {
-  username: string;
-  email: string;
+export interface RegisterResponse {
+  id: number;
   token: string;
 }
 
+export interface ErrorResponse {
+  error: string;
+}
+
 export interface AuthState {
-  currentUser: User | undefined;
-  isLogged: boolean;
+  currentUser: RegisterResponse | undefined;
+  isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const initialState: AuthState = {
   currentUser: undefined,
-  isLogged: false,
+  isAuthenticated: false,
+  isLoading: false,
 };
 
-// Thunk pour la création d'un utilisateur
 export const register = createAsyncThunk<
-  User, // Type de retour
+  RegisterResponse, // Type de retour
   RegisterPayload, // Type des arguments
   { rejectValue: { error: string } } // Type des rejets
 >("auth/register", async (userPayload, thunkAPI) => {
   try {
-    const response = await axios.post("https://api.realworld.io/api/users", {
-      user: userPayload,
-    });
-    return response.data.user;
+    const response = await axios.post(
+      "https://reqres.in/api/register",
+      userPayload
+    );
+
+    return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue({
-      error: error.response?.data?.message || "Une erreur s'est produite",
+      error: error?.response?.data?.message || "Une erreur s'est produite",
     });
   }
 });
@@ -49,16 +57,27 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(register.pending, (state) => {
-        state.isLogged = true;
+        state.isLoading = true;
+        state.isAuthenticated = false;
       })
       .addCase(register.fulfilled, (state, action) => {
         state.currentUser = action.payload;
-        state.isLogged = true;
+        state.isAuthenticated = true;
+        state.isLoading = false;
       })
       .addCase(register.rejected, (state) => {
-        state.isLogged = false;
+        state.isLoading = false;
+        state.isAuthenticated = false;
       });
   },
 });
+
+export const store = configureStore({
+  reducer: {
+    auth: authSlice.reducer,
+  },
+});
+
+export type RootState = ReturnType<typeof store.getState>;
 
 export default authSlice.reducer;

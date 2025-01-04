@@ -1,22 +1,28 @@
 import { MdOutlineEmail } from "react-icons/md";
-import { FaRegUser } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { Link } from "react-router";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { register, RegisterPayload } from "../store/auth.store";
+import { Link, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { register, RegisterPayload, RootState } from "../store/auth.store";
 
 const Register = () => {
-  const dispatch = useDispatch();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
   const [registerPayload, setRegisterPayload] = useState<RegisterPayload>({
-    username: "",
     email: "",
     password: "",
   });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/home");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(`name: ${e.target.name}, value: ${e.target.value}`);
-
     setRegisterPayload({
       ...registerPayload,
       [e.target.name]: e.target.value,
@@ -25,16 +31,11 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(registerPayload);
     dispatch(register(registerPayload) as any);
   };
 
   const isDesabled = () => {
-    return (
-      registerPayload.username === "" ||
-      registerPayload.email === "" ||
-      registerPayload.password === ""
-    );
+    return registerPayload.email === "" || registerPayload.password === "";
   };
 
   return (
@@ -56,16 +57,6 @@ const Register = () => {
             login
           </Link>
         </p>
-        <div className="flex items-center gap-4 p-2 border rounded-md mt-4 font-thin border-gray-400">
-          <FaRegUser className="text-xl" />
-          <input
-            className="w-[100%] border-none focus:outline-none"
-            type="text"
-            name="username"
-            placeholder="Username *"
-            onChange={handleChange}
-          />
-        </div>
         <div className="flex items-center gap-4 p-2 border rounded-md mt-4 font-thin border-gray-400">
           <MdOutlineEmail className="text-2xl" />
           <input
@@ -89,6 +80,7 @@ const Register = () => {
         <p className="text-blue-500 hover:underline cursor-pointer mt-2">
           Forget password ?
         </p>
+        <p className="pt-4">login: eve.holt@reqres.in - password: pistol</p>
         <button
           disabled={isDesabled()}
           type="submit"
