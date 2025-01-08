@@ -8,7 +8,7 @@ export default function Home() {
 
   const handleLogout = () => {
     dispatch(logout() as any);
-    navigate("/login");
+    navigate("/");
   };
 
   return (

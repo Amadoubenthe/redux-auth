@@ -9,6 +9,7 @@ const Register = () => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
   const [registerPayload, setRegisterPayload] = useState<RegisterPayload>({
     email: "",
     password: "",
@@ -86,7 +87,7 @@ const Register = () => {
           type="submit"
           className="text-white bg-blue-500 w-[100%] p-2 rounded-md hover:shadow-md hover:bg-blue-700 mt-4 font-semibold uppercase"
         >
-          Submit
+          {isLoading ? "Loading..." : "Register"}
         </button>
       </form>
     </div>
