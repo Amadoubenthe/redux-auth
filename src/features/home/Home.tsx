@@ -4,6 +4,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   const goToRegister = () => {
+    localStorage.removeItem("tokenReqres");
     navigate("/register");
   };
 

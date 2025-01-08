@@ -15,6 +15,10 @@ export interface RegisterResponse {
   token: string;
 }
 
+export interface LoginResponse {
+  token: string;
+}
+
 export interface ErrorResponse {
   error: string;
 }
@@ -50,6 +54,25 @@ export const register = createAsyncThunk<
   }
 });
 
+export const login = createAsyncThunk<
+  LoginResponse, // Type de retour
+  RegisterPayload, // Type des arguments
+  { rejectValue: { error: string } } // Type des rejets
+>("auth/login", async (userPayload, thunkAPI) => {
+  try {
+    const response = await axios.post(
+      "https://reqres.in/api/login",
+      userPayload
+    );
+
+    return response.data;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({
+      error: error?.response?.data?.message || "Une erreur s'est produite",
+    });
+  }
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -66,6 +89,19 @@ const authSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(register.rejected, (state) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+      })
+      .addCase(login.pending, (state) => {
+        state.isLoading = true;
+        state.isAuthenticated = false;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        localStorage.setItem("tokenReqres", action.payload.token);
+        state.isAuthenticated = true;
+        state.isLoading = false;
+      })
+      .addCase(login.rejected, (state) => {
         state.isLoading = false;
         state.isAuthenticated = false;
       });
